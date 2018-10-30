@@ -2,6 +2,7 @@ package com.microservice.product.service;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -39,9 +40,9 @@ public class ProductService {
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response getProductById(@PathParam("id") Long id){
 		
-		Product product = productDAO.findOne(id);
+		Optional<Product> product = productDAO.findById(id);
 		
-		if(product != null){
+		if(product.isPresent()){
 			
 			return Response.ok(product)
 					.build();
@@ -80,7 +81,7 @@ public class ProductService {
 		
 		
 		//Check if product exists
-		if(productDAO.exists(id)){
+		if(productDAO.existsById(id)){
 			
 			//Update the product
 			productDAO.save(product);
@@ -126,9 +127,9 @@ public class ProductService {
 	public Response deleteProductById(@PathParam("id") Long id){
 		
 		//Check if product exists
-		if(productDAO.exists(id)){
+		if(productDAO.existsById(id)){
 		
-			productDAO.delete(id);
+			productDAO.deleteById(id);
 			return Response.ok() //Code 200
 					.entity("Product has been removed")
 					.build();
